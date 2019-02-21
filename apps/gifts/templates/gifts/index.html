@@ -1,0 +1,96 @@
+
+{% extends './layout.html' %}
+{% block title %}Welcome! Sign in to make a wish! {% endblock %}
+{% block body %}
+
+    <a href="/">Home</a>
+    <a href="{% url 'gifts:logout' %}" class ="">Logout</a>
+
+    <div class="container">
+      
+    <h4>Hello {{ welcome.first_name }}!</h4>
+    </div>
+  
+   
+    <a href="Logout">Logout</a>
+    
+    <h2>Your Wish List</h2>
+    <!--below was unmatched_users -->
+    <table id="/user/create/" method="post">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Added By</th>
+                <th>Date Added</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gift in user_wishlist %}
+            <tr>
+                <th><a href="/close_ups">{{ gift.name }}</a></th>
+                <th>{{ gift.creator.first_name }}</th>
+                <th>{{ gift.creator.created_at }}</th>
+             
+                <th>
+                    <form action="/remove/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="gift_id" value="{{ gift.id }}">
+                        <input type="submit" value="remove">
+                    </form>
+                </th>
+                {% if gift.creator.id == request.session.user_id %}
+                <th>
+                    <form action="/delete/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="gift_id" value="{{ gift.id }}">
+                        <input type="submit" value="delete">
+                    </form>
+                </th>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Other User's Wish List</h2>
+<!---   <table id="similar to form action label here comes from trial_1/users/models/class Request/ related_name=requests_sent"> -->
+    <table id="name good for html or css">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Added By</th>
+                <th>Date Added</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gift in other_gifts %}
+            <tr>
+                <th><a href="/close_ups">{{ gift.name }}</a></th>
+                <th>{{ gift.creator.first_name }}</th>
+                <th>{{ gift.creator.created_at }}</th>
+                <th>
+                    <form action="/add_item/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="gift_id" value="{{ gift.id }}">
+                    <input type="submit" value="add to wishlist">
+                    </form>
+                </th>
+                {% if gift.creator.id == request.session.user_id %}
+                <th>
+                    <form action="/delete/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="gift_id" value="{{ gift.id }}">
+                        <input type="submit" value="delete">
+                    </form>
+                </th>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<div><a href="/items">Add Item</a></div>
+<!--exam_prep/trial_one   <a href="/logout" class="button">Logout</a> -->
+   
+
+{% endblock %}
